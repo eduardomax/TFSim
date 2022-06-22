@@ -40,6 +40,7 @@ int sc_main(int argc, char *argv[])
     menubar mnbar(fm);
     button botao(fm);
     button clock_control(fm);
+    button run_all_button(fm);
     button exit(fm);
     group clock_group(fm);
     label clock_count(clock_group);
@@ -53,9 +54,10 @@ int sc_main(int argc, char *argv[])
     top top1("top");
     botao.caption("START");
     clock_control.caption("NEXT CYCLE");
+    run_all_button.caption("RUN ALL");
     exit.caption("EXIT");
     plc["rst"] << table;
-    plc["btns"] << botao << clock_control << exit;
+    plc["btns"] << botao << clock_control << run_all_button << exit;
     plc["memor"] << memory;
     plc["regs"] << reg;
     plc["rob"] << rob;
@@ -540,12 +542,14 @@ int sc_main(int argc, char *argv[])
         }
     }
     clock_control.enabled(false);
+    run_all_button.enabled(false);
     botao.events().click([&]
     {
         if(fila)
         {
             botao.enabled(false);
             clock_control.enabled(true);
+            run_all_button.enabled(true);
             //Desativa os menus apos inicio da execucao
             op.enabled(0,false);
             op.enabled(1,false);
@@ -568,6 +572,13 @@ int sc_main(int argc, char *argv[])
         if(sc_is_running())
             sc_start();
     });
+    run_all_button.events().click([]
+    {
+        // cout << "----------------- SIZE " << instruction_queue.size() << " -----------------" << endl << flush;
+        while(sc_is_running())
+            sc_start();
+    });
+
     exit.events().click([]
     {
         sc_stop();

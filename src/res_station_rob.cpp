@@ -59,6 +59,7 @@ void res_station_rob::exec()
             }
             if(!isMemory)
             {
+                cout << "Instrucao " << op << " com " << instruct_time[op] << " ciclos para exec " << endl << flush;
                 wait(sc_time(instruct_time[op],SC_NS),isFlushed_event);
                 wait(SC_ZERO_TIME);
                 if(!isFlushed)
@@ -69,7 +70,7 @@ void res_station_rob::exec()
                     else
                         rs = std::to_string((int)res);
                     escrita_saida = std::to_string(dest) + ' ' + rs;
-                    cout << "Instrucao " << op << " completada no ciclo " << sc_time_stamp() << " em " << name() << " com resultado " << res << endl << flush;
+                    cout << "Instrucao " << op << " completada no ciclo " << sc_time_stamp() << " em " << name() << " com resultado " << res << " SAIDA " << escrita_saida << endl << flush;
                     out->write(escrita_saida);
                 }
             }

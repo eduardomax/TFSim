@@ -124,6 +124,7 @@ void reorder_buffer::leitura_issue()
                 ptrs[pos]->qj = regst;
             if(branch_instr[ord[0]] < 2) //instrucao com 2 operandos (BEQ,BNE)
             {
+                cout << "-----------------INSTRUCAO COM 2 OPERANDOS " << sc_time_stamp() << " -----------------" << endl << flush;
                 regst = ask_status(true,ord[2]);
                 check_value = false;
                 if(regst != 0)
@@ -149,6 +150,7 @@ void reorder_buffer::leitura_issue()
             {
                 cat.at(pos).text(DESTINATION,ord[2]);
                 ptrs[pos]->destination = ord[2];
+                cout << "----------------- BRANCH < 2 ELSE " << ord[2] << " -----------------" << endl << flush;
             }
             ptrs[pos]->prediction = preditor.predict();
             if(preditor.predict())
@@ -160,6 +162,7 @@ void reorder_buffer::leitura_issue()
         }
         else
         {
+            cout << "-----------------ELSE DESTINATION " << ord[1] << " -----------------" << endl << flush;
             ptrs[pos]->destination = ord[1];
             cat.at(pos).text(DESTINATION,ord[1]);
             if(ord[0].at(0) != 'L')
@@ -191,6 +194,7 @@ void reorder_buffer::new_rob_head()
             mem_write(std::stoi(rob_buff[0]->destination),rob_buff[0]->value,rob_buff[0]->entry);
         else if(rob_buff[0]->instruction.at(0) == 'B')
         {
+            cout << "----------------- HEAD ROB BRANCH no ciclo " << sc_time_stamp() << rob_buff[0]->instruction << " -----------------" << endl << flush;
             instr_queue_gui.at(rob_buff[0]->instr_pos).text(EXEC,"X");
             instr_queue_gui.at(rob_buff[0]->instr_pos).text(WRITE,"X");
             instr_type = branch_instr[rob_buff[0]->instruction];
