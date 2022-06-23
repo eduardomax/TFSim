@@ -50,7 +50,7 @@ int sc_main(int argc, char *argv[])
     grid memory(fm,rectangle(),10,50);
     // Tempo de latencia de uma instrucao
     // Novas instrucoes devem ser inseridas manualmente aqui
-    map<string,int> instruct_time{{"DADD",4},{"DADDI",4},{"DSUB",6},{"DSUBI",6},{"DMUL",10},{"DDIV",16},{"MEM",2}};
+    map<string,int> instruct_time{{"DADD",4},{"DADDI",4},{"DSUB",6},{"DSUBI",6},{"DMUL",10},{"DDIV",16},{"MEM",2}, {"BNE", 2}, {"BEQ", 2}};
     top top1("top");
     botao.caption("START");
     clock_control.caption("NEXT CYCLE");
@@ -108,7 +108,8 @@ int sc_main(int argc, char *argv[])
         inputbox::text dmul_t("DMUL",std::to_string(instruct_time["DMUL"]));
         inputbox::text ddiv_t("DDIV",std::to_string(instruct_time["DDIV"]));
         inputbox::text mem_t("Load/Store",std::to_string(instruct_time["MEM"]));
-        if(ibox.show_modal(dadd_t,daddi_t,dsub_t,dsubi_t,dmul_t,ddiv_t,mem_t))
+        inputbox::text branches_t("BNE/BEQ",std::to_string(instruct_time["BNE"]));
+        if(ibox.show_modal(dadd_t,daddi_t,dsub_t,dsubi_t,dmul_t,ddiv_t,mem_t,branches_t))
         {
             instruct_time["DADD"] = std::stoi(dadd_t.value());
             instruct_time["DADDI"] = std::stoi(daddi_t.value());
@@ -117,6 +118,8 @@ int sc_main(int argc, char *argv[])
             instruct_time["DMUL"] = std::stoi(dmul_t.value());
             instruct_time["DDIV"] = std::stoi(ddiv_t.value());
             instruct_time["MEM"] = std::stoi(mem_t.value());
+            instruct_time["BNE"] = std::stoi(branches_t.value());
+            instruct_time["BEQ"] = std::stoi(branches_t.value());
         }
     });
     sub->append("Fila de instruções", [&](menu::item_proxy &ip)

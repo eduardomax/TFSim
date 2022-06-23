@@ -158,7 +158,7 @@ void reorder_buffer::leitura_issue()
             else
                 out_iq->write("S " + std::to_string(ptrs[pos]->entry));
             if(ptrs[pos]->qj == 0 && ptrs[pos]->qk == 0)
-                ptrs[pos]->ready = true;
+                // ptrs[pos]->ready = true; // ALTERADO: Modificado para BNE/BEQ forçar ser executado pela estacao de reserva
         }
         else
         {
@@ -389,8 +389,9 @@ void reorder_buffer::check_dependencies(unsigned int index, float value)
                 ptrs[i]->vk = value;
                 ptrs[i]->qk = 0;
             }
-            if(ptrs[i]->qj == 0 && ptrs[i]->qk == 0)
-                ptrs[i]->ready = true;
+            if(ptrs[i]->qj == 0 && ptrs[i]->qk == 0) {
+                // ptrs[i]->ready = true; // ALTERADO: Modificado para BNE/BEQ forçar ser executado pela estacao de reserva
+            }
             if(rob_buff[0]->entry == index && ptrs[i]->ready)
                 rob_head_value_event.notify(1,SC_NS);
         }
