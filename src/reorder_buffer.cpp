@@ -157,8 +157,9 @@ void reorder_buffer::leitura_issue()
                 out_iq->write("S " + std::to_string(ptrs[pos]->entry) +  ' ' + ptrs[pos]->destination);
             else
                 out_iq->write("S " + std::to_string(ptrs[pos]->entry));
-            if(ptrs[pos]->qj == 0 && ptrs[pos]->qk == 0)
+            if(ptrs[pos]->qj == 0 && ptrs[pos]->qk == 0) {
                 // ptrs[pos]->ready = true; // ALTERADO: Modificado para BNE/BEQ forçar ser executado pela estacao de reserva
+            }
         }
         else
         {
@@ -195,13 +196,14 @@ void reorder_buffer::new_rob_head()
         else if(rob_buff[0]->instruction.at(0) == 'B')
         {
             cout << "----------------- HEAD ROB BRANCH no ciclo " << sc_time_stamp() << rob_buff[0]->instruction << " -----------------" << endl << flush;
-            instr_queue_gui.at(rob_buff[0]->instr_pos).text(EXEC,"X");
+            // instr_queue_gui.at(rob_buff[0]->instr_pos).text(EXEC,"X");
             instr_queue_gui.at(rob_buff[0]->instr_pos).text(WRITE,"X");
             instr_type = branch_instr[rob_buff[0]->instruction];
             if(instr_type < 2)
                 pred = branch(instr_type,rob_buff[0]->vj,rob_buff[0]->vk);
             else
                 pred = branch(instr_type,(float)rob_buff[0]->vj);
+            cout << "----------------- prediction branch real: " << pred << " prediction: " << rob_buff[0]->prediction << " -----------------" << endl << flush;
             if(pred != rob_buff[0]->prediction)
             {
                 if(pred)
