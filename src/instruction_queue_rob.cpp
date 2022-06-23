@@ -68,17 +68,17 @@ void instruction_queue_rob::leitura_rob()
     else if(ord[0] == "S" && ord.size() == 3) //realiza salto (especulado) e armazena informacoes pre-salto
     {
         last_instr[index] = instruct_queue;
-        last_pc[index] = pc;
+        last_pc[index] = pc + 1;
         vector<instr_q> new_instructions_vec;
         offset = std::stoi(ord[2]);
-        unsigned int original_pc = instruct_queue[pc-1].pc;
+        unsigned int original_pc = instruct_queue[pc].pc;
         for(unsigned int i = original_pc+offset ; i < original_instruct.size() ; i++)
             new_instructions_vec.push_back({original_instruct[i],i});
-        add_instructions(pc,new_instructions_vec);
+        add_instructions(pc+1,new_instructions_vec);
     }
     else if(ord[0] == "S")
     {
-        last_pc[index] = pc;
+        last_pc[index] = pc + 1;
     }
     else //salta atrasado (quando foi predito que nao saltaria)
     {

@@ -153,6 +153,7 @@ void reorder_buffer::leitura_issue()
                 cout << "----------------- BRANCH < 2 ELSE " << ord[2] << " -----------------" << endl << flush;
             }
             ptrs[pos]->prediction = preditor.predict();
+            cout << "------------- PREDICT " << preditor.predict() << endl << flush;
             if(preditor.predict())
                 out_iq->write("S " + std::to_string(ptrs[pos]->entry) +  ' ' + ptrs[pos]->destination);
             else
