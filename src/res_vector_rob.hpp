@@ -20,7 +20,7 @@ public:
     sc_port<read_if_f> in_rob;
     sc_port<write_if_f> out_rob;
     SC_HAS_PROCESS(res_vector_rob);
-    res_vector_rob(sc_module_name name,unsigned int t1, unsigned int t2,map<string,int> instruct_time, nana::listbox &lsbox, nana::listbox::cat_proxy ct, nana::listbox::cat_proxy r_ct);
+    res_vector_rob(sc_module_name name,unsigned int t1, unsigned int t2,branch_target_buffer_vector *btb,map<string,int> instruct_time, nana::listbox &lsbox, nana::listbox::cat_proxy ct, nana::listbox::cat_proxy r_ct);
     ~res_vector_rob();
     void leitura_issue();
     void leitura_rob();

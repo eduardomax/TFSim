@@ -2,7 +2,7 @@
 #include "general.hpp"
 
 
-res_station_rob::res_station_rob(sc_module_name name,int i, string n,bool isMem, map<string,int> inst_map, const nana::listbox::item_proxy item, const nana::listbox::cat_proxy c, const nana::listbox::cat_proxy rgui):
+res_station_rob::res_station_rob(sc_module_name name,int i, string n,bool isMem, branch_target_buffer_vector *btb, map<string,int> inst_map, const nana::listbox::item_proxy item, const nana::listbox::cat_proxy c, const nana::listbox::cat_proxy rgui):
 sc_module(name),
 id(i),
 type_name(n),
@@ -10,7 +10,8 @@ isMemory(isMem),
 instruct_time(inst_map),
 table_item(item),
 instr_queue_gui(c),
-rob_gui(rgui)
+rob_gui(rgui),
+btb(btb)
 {
     Busy = isFlushed = false;
     vj = vk = qj = qk = a = 0;
@@ -59,8 +60,15 @@ void res_station_rob::exec()
             }
             if(!isMemory)
             {
+                btb->print_btb();
+                if (btb->exist_predicted_pc(instr_pos) && (op == "BNE" || op == "BEQ")) {// Checking in BTB if op is BNE or BEQ
+                    cout << "Existe a instrução no BTB, no ciclo " << sc_time_stamp() << endl << flush;
+                } 
+                else {
+                    wait(sc_time(instruct_time[op],SC_NS),isFlushed_event);
+                }
                 cout << "Instrucao " << op << " com " << instruct_time[op] << " ciclos para exec " << endl << flush;
-                wait(sc_time(instruct_time[op],SC_NS),isFlushed_event);
+                // wait(sc_time(instruct_time[op],SC_NS),isFlushed_event);
                 wait(SC_ZERO_TIME);
                 if(!isFlushed)
                 {

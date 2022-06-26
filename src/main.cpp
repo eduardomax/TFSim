@@ -550,6 +550,7 @@ int sc_main(int argc, char *argv[])
     {
         if(fila)
         {
+            unsigned int btb_size = 3;//TODO: Alterar para ler pela interface?
             botao.enabled(false);
             clock_control.enabled(true);
             run_all_button.enabled(true);
@@ -562,7 +563,7 @@ int sc_main(int argc, char *argv[])
             for(int i = 0 ; i < 5 ; i++)
                 bench_sub->enabled(i,false);
             if(spec)
-                top1.rob_mode(nadd,nmul,nls,instruct_time,instruction_queue,table,memory,reg,instruct,clock_count,rob);
+                top1.rob_mode(nadd,nmul,nls,btb_size,instruct_time,instruction_queue,table,memory,reg,instruct,clock_count,rob);
             else
                 top1.simple_mode(nadd,nmul,nls,instruct_time,instruction_queue,table,memory,reg,instruct,clock_count);
             sc_start();

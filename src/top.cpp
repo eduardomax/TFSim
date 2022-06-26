@@ -51,7 +51,8 @@ void top::simple_mode(unsigned int nadd, unsigned int nmul,unsigned int nload,ma
     mem->out(*CDB);
 }
 
-void top::rob_mode(unsigned int nadd, unsigned int nmul,unsigned int nload,map<string,int> instruct_time, vector<string> instruct_queue, nana::listbox &table, nana::grid &mem_gui, nana::listbox &regs, nana::listbox &instr_gui, nana::label &ccount, nana::listbox &rob_gui)
+void top::rob_mode(unsigned int nadd, unsigned int nmul,unsigned int nload, unsigned int btb_size, map<string,int> instruct_time, vector<string> instruct_queue,
+ nana::listbox &table, nana::grid &mem_gui, nana::listbox &regs, nana::listbox &instr_gui, nana::label &ccount, nana::listbox &rob_gui)
 {
     int rob_size = 10; //Tamanho do REORDER BUFFER
     CDB = unique_ptr<bus>(new bus("CDB"));
@@ -71,14 +72,16 @@ void top::rob_mode(unsigned int nadd, unsigned int nmul,unsigned int nload,map<s
     rob_slb_bus = unique_ptr<cons_bus_fast>(new cons_bus_fast("rob_slb_bus"));
     rb_bus = unique_ptr<cons_bus_fast>(new cons_bus_fast("rb_bus"));
 
+    btb = new branch_target_buffer_vector(btb_size);
+
     clk = unique_ptr<clock_>(new clock_("clock",1,ccount));
     iss_ctrl_r = unique_ptr<issue_control_rob>(new issue_control_rob("issue_control_rob"));
     fila_r = unique_ptr<instruction_queue_rob>(new instruction_queue_rob("fila_inst_rob",instruct_queue,rob_size,instr_gui));
-    rob = unique_ptr<reorder_buffer>(new reorder_buffer("rob",rob_size,2,rob_gui,instr_gui.at(0)));
+    rob = unique_ptr<reorder_buffer>(new reorder_buffer("rob",rob_size,2,btb,rob_gui,instr_gui.at(0)));
     adu = unique_ptr<address_unit>(new address_unit("address_unit",instruct_time["MEM"],instr_gui.at(0),table.at(0),nadd+nmul));
-    rs_ctrl_r = unique_ptr<res_vector_rob>(new res_vector_rob("rs_vc",nadd,nmul,instruct_time,table,instr_gui.at(0),rob_gui.at(0)));
+    rs_ctrl_r = unique_ptr<res_vector_rob>(new res_vector_rob("rs_vc",nadd,nmul,btb,instruct_time,table,instr_gui.at(0),rob_gui.at(0)));
     rb_r = unique_ptr<register_bank_rob>(new register_bank_rob("register_bank_rob",regs));
-    slb_r = unique_ptr<sl_buffer_rob>(new sl_buffer_rob("sl_buffer_rob",nload,nadd+nmul,instruct_time,table,instr_gui.at(0),rob_gui.at(0)));
+    slb_r = unique_ptr<sl_buffer_rob>(new sl_buffer_rob("sl_buffer_rob",nload,nadd+nmul,btb,instruct_time,table,instr_gui.at(0),rob_gui.at(0)));
     mem_r = unique_ptr<memory_rob>(new memory_rob("memory_rob", mem_gui));
 
     clk->out(*clock_bus);

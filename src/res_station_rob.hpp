@@ -3,6 +3,7 @@
 #include<nana/gui/widgets/listbox.hpp>
 #include<vector>
 #include<map>
+#include "branch_target_buffer_vector.hpp"
 
 using std::vector;
 using std::map;
@@ -29,7 +30,7 @@ public:
     sc_event exec_event,isFlushed_event;
     SC_HAS_PROCESS(res_station_rob);
 
-    res_station_rob(sc_module_name name,int i, string n, bool isMem, map<string,int> inst_map, const nana::listbox::item_proxy item, const nana::listbox::cat_proxy c, const nana::listbox::cat_proxy rgui);
+    res_station_rob(sc_module_name name,int i, string n, bool isMem, branch_target_buffer_vector *btb, map<string,int> inst_map, const nana::listbox::item_proxy item, const nana::listbox::cat_proxy c, const nana::listbox::cat_proxy rgui);
     void exec();
     void leitura();
     void clean_item();
@@ -41,6 +42,7 @@ private:
     nana::listbox::item_proxy table_item;
     const nana::listbox::cat_proxy instr_queue_gui;
     const nana::listbox::cat_proxy rob_gui;
+    branch_target_buffer_vector* btb;
 
     void mem_req(bool load,unsigned int addr,int value);
 };

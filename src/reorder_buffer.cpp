@@ -1,10 +1,11 @@
 #include <nana/gui.hpp>
 #include "reorder_buffer.hpp"
 
-reorder_buffer::reorder_buffer(sc_module_name name,unsigned int sz,unsigned int pred_size, nana::listbox &gui, nana::listbox::cat_proxy instr_gui): 
+reorder_buffer::reorder_buffer(sc_module_name name,unsigned int sz,unsigned int pred_size, branch_target_buffer_vector* btb,nana::listbox &gui, nana::listbox::cat_proxy instr_gui): 
 sc_module(name),
 tam(sz),
 preditor(pred_size),
+btb(btb),
 gui_table(gui),
 instr_queue_gui(instr_gui)
 {
@@ -204,7 +205,12 @@ void reorder_buffer::new_rob_head()
                 pred = branch(instr_type,rob_buff[0]->vj,rob_buff[0]->vk);
             else
                 pred = branch(instr_type,(float)rob_buff[0]->vj);
-            cout << "----------------- prediction branch real: " << pred << " prediction: " << rob_buff[0]->prediction << " -----------------" << endl << flush;
+            
+            if (pred) {//Insert in BTB
+                unsigned int predicted_pc = rob_buff[0]->instr_pos + std::stoul(rob_buff[0]->destination);
+                btb->insert_pc(rob_buff[0]->instr_pos, predicted_pc);
+            }
+
             if(pred != rob_buff[0]->prediction)
             {
                 if(pred)

@@ -1,7 +1,7 @@
 #include "res_vector_rob.hpp"
 #include "general.hpp"
 
-res_vector_rob::res_vector_rob(sc_module_name name,unsigned int t1, unsigned int t2,map<string,int> instruct_time, nana::listbox &lsbox, nana::listbox::cat_proxy ct, nana::listbox::cat_proxy r_ct):
+res_vector_rob::res_vector_rob(sc_module_name name,unsigned int t1, unsigned int t2,branch_target_buffer_vector *btb,map<string,int> instruct_time, nana::listbox &lsbox, nana::listbox::cat_proxy ct, nana::listbox::cat_proxy r_ct):
 sc_module(name),
 table(lsbox)
 {
@@ -19,7 +19,7 @@ table(lsbox)
         else
             texto = "Mult" + std::to_string(i-t1+1);
         cat.append({std::to_string(cat.size()+1),texto,"False"});
-        rs[i] = new res_station_rob(texto.c_str(),i+1,texto,false,instruct_time,cat.at(i),ct,r_ct);
+        rs[i] = new res_station_rob(texto.c_str(),i+1,texto,false,btb,instruct_time,cat.at(i),ct,r_ct);
         rs[i]->in(in_cdb);
         rs[i]->out(out_cdb);
         rs[i]->out_mem(out_mem);

@@ -17,7 +17,6 @@
 #include "instruction_queue_rob.hpp"
 #include "address_unit.hpp"
 
-
 using std::unique_ptr;
 
 class top: public sc_module
@@ -25,7 +24,7 @@ class top: public sc_module
 public:
     top(sc_module_name name);
     void simple_mode(unsigned int nadd, unsigned int nmul,unsigned int nload,map<string,int> instruct_time,vector<string> instruct_queue, nana::listbox &table, nana::grid &mem_gui, nana::listbox &regs, nana::listbox &instr, nana::label &ccount);
-    void rob_mode(unsigned int nadd, unsigned int nmul,unsigned int nload,map<string,int> instruct_time, vector<string> instruct_queue, nana::listbox &table, nana::grid &mem_gui, nana::listbox &regs, nana::listbox &instr, nana::label &count, nana::listbox &rob_gui);
+    void rob_mode(unsigned int nadd, unsigned int nmul,unsigned int nload, unsigned int btb_size, map<string,int> instruct_time, vector<string> instruct_queue, nana::listbox &table, nana::grid &mem_gui, nana::listbox &regs, nana::listbox &instr, nana::label &count, nana::listbox &rob_gui);
 private:
     //Para simple(sem especulacao)
     unique_ptr<bus> CDB,mem_bus,clock_bus;
@@ -51,4 +50,6 @@ private:
     unique_ptr<register_bank_rob> rb_r;
     unique_ptr<memory_rob> mem_r;
     unique_ptr<instruction_queue_rob> fila_r;
+
+    branch_target_buffer_vector* btb;
 };

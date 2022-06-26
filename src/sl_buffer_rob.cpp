@@ -1,7 +1,7 @@
 #include "sl_buffer_rob.hpp"
 #include "general.hpp"
 
-sl_buffer_rob::sl_buffer_rob(sc_module_name name,unsigned int t,unsigned int t_outros,map<string,int> instruct_time, nana::listbox &lsbox, nana::listbox::cat_proxy ct, nana::listbox::cat_proxy r_ct): 
+sl_buffer_rob::sl_buffer_rob(sc_module_name name,unsigned int t,unsigned int t_outros, branch_target_buffer_vector* btb,map<string,int> instruct_time, nana::listbox &lsbox, nana::listbox::cat_proxy ct, nana::listbox::cat_proxy r_ct): 
 sc_module(name),
 tam(t),
 tam_outros(t_outros),
@@ -14,7 +14,7 @@ table(lsbox)
     {
         texto = "Load" + std::to_string(i+1);
         cat.append({std::to_string(cat.size()+1),texto,"False"});
-        ptrs[i] = new res_station_rob(texto.c_str(),i+t_outros,texto,true,instruct_time,cat.at(i+t_outros),ct,r_ct);
+        ptrs[i] = new res_station_rob(texto.c_str(),i+t_outros,texto,true,btb,instruct_time,cat.at(i+t_outros),ct,r_ct);
         ptrs[i]->in(in_cdb);
         ptrs[i]->out(out_cdb);
         ptrs[i]->out_mem(out_mem);
