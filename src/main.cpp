@@ -17,14 +17,16 @@ using std::vector;
 using std::map;
 using std::fstream;
 
+top top1("top");
 
 int sc_main(int argc, char *argv[])
 {
     using namespace nana;
     vector<string> instruction_queue;
-    int nadd,nmul,nls;
+    int nadd,nmul,nls,btb_size;
     nadd = 3;
     nmul = nls = 2;
+    btb_size = 3;
     std::vector<int> sizes;
     bool spec = false;
     bool fila = false;
@@ -51,7 +53,7 @@ int sc_main(int argc, char *argv[])
     // Tempo de latencia de uma instrucao
     // Novas instrucoes devem ser inseridas manualmente aqui
     map<string,int> instruct_time{{"DADD",4},{"DADDI",4},{"DSUB",6},{"DSUBI",6},{"DMUL",10},{"DDIV",16},{"MEM",2}, {"BNE", 2}, {"BEQ", 2}};
-    top top1("top");
+    // top top1("top");
     botao.caption("START");
     clock_control.caption("NEXT CYCLE");
     run_all_button.caption("RUN ALL");
@@ -217,6 +219,20 @@ int sc_main(int argc, char *argv[])
                 inFile.close();
             }
         }
+    });
+    sub->append("Tamanho do Preditor de Desvios", [&](menu::item_proxy ip)
+    {
+        if (spec)
+        {
+            inputbox ibox(fm, "", "Tamanho do Preditor de Desvios");
+            inputbox::integer btb("BTB", btb_size, 1, 100, 1);
+            if (ibox.show_modal(btb))
+            {
+                btb_size = btb.value();
+            }
+        }
+        else
+            show_message("Especulação desativada", "Preditor de desvios disponível apenas com especulação ativada!");
     });
     op.append("Verificar conteúdo...");
     auto new_sub = op.create_sub_menu(2);
@@ -550,7 +566,6 @@ int sc_main(int argc, char *argv[])
     {
         if(fila)
         {
-            unsigned int btb_size = 3;//TODO: Alterar para ler pela interface?
             botao.enabled(false);
             clock_control.enabled(true);
             run_all_button.enabled(true);
@@ -576,13 +591,11 @@ int sc_main(int argc, char *argv[])
         if(sc_is_running())
             sc_start();
     });
-    run_all_button.events().click([]
-    {
-        // cout << "----------------- SIZE " << instruction_queue.size() << " -----------------" << endl << flush;
-        while(sc_is_running())
+    run_all_button.events().click([]{
+        while (!top1.finished()) {
             sc_start();
+        }
     });
-
     exit.events().click([]
     {
         sc_stop();

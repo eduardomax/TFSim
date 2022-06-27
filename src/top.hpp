@@ -25,6 +25,7 @@ public:
     top(sc_module_name name);
     void simple_mode(unsigned int nadd, unsigned int nmul,unsigned int nload,map<string,int> instruct_time,vector<string> instruct_queue, nana::listbox &table, nana::grid &mem_gui, nana::listbox &regs, nana::listbox &instr, nana::label &ccount);
     void rob_mode(unsigned int nadd, unsigned int nmul,unsigned int nload, unsigned int btb_size, map<string,int> instruct_time, vector<string> instruct_queue, nana::listbox &table, nana::grid &mem_gui, nana::listbox &regs, nana::listbox &instr, nana::label &count, nana::listbox &rob_gui);
+    bool finished();
 private:
     //Para simple(sem especulacao)
     unique_ptr<bus> CDB,mem_bus,clock_bus;

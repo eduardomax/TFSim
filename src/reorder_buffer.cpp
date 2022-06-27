@@ -500,3 +500,8 @@ int reorder_buffer::instruction_pos_finder(string p)
     }
     return -1;
 }
+
+bool reorder_buffer::empty()
+{
+    return rob_buff.empty();
+}

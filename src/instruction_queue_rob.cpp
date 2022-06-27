@@ -49,6 +49,10 @@ void instruction_queue_rob::main()
     }
 }
 
+bool instruction_queue_rob::end_of_rob() {
+    return pc == instruct_queue.size();
+}
+
 void instruction_queue_rob::leitura_rob()
 {
     string p;

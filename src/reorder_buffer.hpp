@@ -36,6 +36,7 @@ public:
     void leitura_adu();
     void value_check();
     void check_conflict();
+    bool empty();
 
 private:
     struct rob_slot{
