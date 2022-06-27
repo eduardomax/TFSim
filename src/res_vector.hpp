@@ -21,6 +21,7 @@ public:
     res_vector(sc_module_name name,unsigned int t1, unsigned int t2,map<string,int> instruct_time, nana::listbox &lsbox, nana::listbox::cat_proxy ct);
     ~res_vector();
     void leitura_issue();
+    bool any_busy();
 
 private:
     map<string,int> res_type;

@@ -52,7 +52,9 @@ void top::simple_mode(unsigned int nadd, unsigned int nmul,unsigned int nload,ma
 }
 
 bool top::finished() {
-    return fila_r->end_of_rob() && rob->empty();
+    if (fila_r != NULL && rob != NULL)
+        return fila_r->end_of_rob() && rob->empty();
+    return fila->end_of_rob() && !rs_ctrl->any_busy();
 }
 
 void top::rob_mode(unsigned int nadd, unsigned int nmul,unsigned int nload, unsigned int btb_size, map<string,int> instruct_time, vector<string> instruct_queue,

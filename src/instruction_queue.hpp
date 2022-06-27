@@ -14,7 +14,7 @@ public:
     SC_HAS_PROCESS(instruction_queue);
     instruction_queue(sc_module_name name, vector<string> inst_q, nana::listbox &instr);
     void main();
-
+    bool end_of_rob();
 private:
     unsigned int pc;
     vector<string> instruct_queue;

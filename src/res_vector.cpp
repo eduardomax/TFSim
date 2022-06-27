@@ -35,6 +35,16 @@ res_vector::~res_vector()
         delete rs[i];
 }
 
+bool res_vector::any_busy() {
+    for(unsigned int i = 0 ; i < rs.size() ; i++)
+    {
+        if (rs[i]->Busy) {
+            return true;
+        }
+    }
+    return false;
+}
+
 void res_vector::leitura_issue()
 {
     string p;

@@ -25,3 +25,7 @@ void instruction_queue::main()
         wait();
     }
 }
+
+bool instruction_queue::end_of_rob() {
+    return pc == instruct_queue.size();
+}
