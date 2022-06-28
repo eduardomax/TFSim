@@ -65,8 +65,8 @@ void instruction_queue_rob::leitura_rob()
     if(ord[0] == "R") //reverter salto incorreto
     {
         instructions.at(0).at(pc-1).select(false);
-        replace_instructions(last_pc[index]-1,index);
-        pc = last_pc[index]-1;
+        replace_instructions(last_pc[index],index);
+        pc = last_pc[index];
         instruct_queue = last_instr[index]; 
     }
     else if(ord[0] == "S" && ord.size() == 3) //realiza salto (especulado) e armazena informacoes pre-salto

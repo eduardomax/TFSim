@@ -595,6 +595,8 @@ int sc_main(int argc, char *argv[])
         while (!top1.finished()) {
             sc_start();
         }
+
+        top1.metrics_report();
     });
     exit.events().click([]
     {

@@ -22,6 +22,7 @@ public:
     ~res_vector();
     void leitura_issue();
     bool any_busy();
+    unsigned int total_instructions_exec();
 
 private:
     map<string,int> res_type;

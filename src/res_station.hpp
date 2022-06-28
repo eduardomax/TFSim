@@ -28,6 +28,7 @@ public:
     sc_event exec_event;
     sc_event isFirst_event;
     SC_HAS_PROCESS(res_station);
+    unsigned int total_instructions_exec;
 
     res_station(sc_module_name name,int i, string n,bool isMem,  map<string,int> inst_map, const nana::listbox::item_proxy item, const nana::listbox::cat_proxy c);
     void exec();

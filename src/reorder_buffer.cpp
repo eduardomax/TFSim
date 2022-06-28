@@ -9,6 +9,7 @@ btb(btb),
 gui_table(gui),
 instr_queue_gui(instr_gui)
 {
+    total_instructions_exec = 0;
     last_rob = 0;
     branch_instr = {{"BEQ",0},{"BNE",1},{"BGTZ",2},{"BLTZ",3},{"BGEZ",4},{"BLEZ",5}};
     ptrs = new rob_slot*[tam];
@@ -224,6 +225,8 @@ void reorder_buffer::new_rob_head()
                 out_rb->write("F");
                 out_adu->write("F");
             }
+            total_instructions_exec += 1;
+            
             preditor.update_state(pred);
         }
         else
@@ -236,6 +239,7 @@ void reorder_buffer::new_rob_head()
         }
         if(!rob_buff.empty())
         {
+            total_instructions_exec += 1;
             rob_buff[0]->busy = false;
             cat.at(rob_buff[0]->entry-1).text(R_BUSY,"False");
             rob_buff[0]->ready = false;

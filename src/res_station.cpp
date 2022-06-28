@@ -13,6 +13,7 @@ cat(c)
 {
     Busy = isFirst = false;
     vj = vk = qj = qk = a = 0;
+    total_instructions_exec = 0;
     SC_THREAD(exec);
     sensitive << exec_event;
     dont_initialize();
@@ -83,6 +84,7 @@ void res_station::exec()
             isFirst = false;
             a = 0;
         }
+        total_instructions_exec += 1;
         Busy = false;
         cout << "estacao " << id << " liberada no ciclo " << sc_time_stamp() << endl << flush;
         clean_item(); //Limpa a tabela na interface grafica

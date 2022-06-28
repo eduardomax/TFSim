@@ -34,6 +34,14 @@ res_vector::~res_vector()
     for(unsigned int i = 0 ; i < rs.size() ; i++)
         delete rs[i];
 }
+ 
+unsigned int res_vector::total_instructions_exec()
+{
+    unsigned int total_instructions_exec = 0;
+    for(unsigned int i = 0 ; i < rs.size() ; i++)
+        total_instructions_exec += rs[i]->total_instructions_exec;
+    return total_instructions_exec;
+}
 
 bool res_vector::any_busy() {
     for(unsigned int i = 0 ; i < rs.size() ; i++)

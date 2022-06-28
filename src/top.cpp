@@ -57,6 +57,24 @@ bool top::finished() {
     return fila->end_of_rob() && !rs_ctrl->any_busy();
 }
 
+void top::metrics_report() {
+    cout << " ############################ " << endl << flush;
+    cout << " ######### Métricas ######### " << endl << flush;
+    cout << " ############################ " << endl << flush;
+    double ciclos = static_cast<double>((sc_time_stamp().to_double()/1000) - 1);
+    if (fila_r != NULL && rob != NULL) {
+        cout << " ######### Total de Instruções: " << rob->total_instructions_exec << endl << flush;
+        cout << " ######### Ciclos: " << ciclos << endl << flush;
+        cout << " ######### IPC: " << static_cast<double>(rob->total_instructions_exec)/ciclos << endl << flush;
+        cout << " ######### MIPS: " << endl << flush;
+        return;
+    }
+    cout << " ######### Total de Instruções: " << rs_ctrl->total_instructions_exec() << endl << flush;
+    cout << " ######### Ciclos: " << ciclos << endl << flush;
+    cout << " ######### IPC: " << static_cast<double>(rs_ctrl->total_instructions_exec())/ciclos << endl << flush;
+    cout << " ######### MIPS: " << endl << flush;
+}
+
 void top::rob_mode(unsigned int nadd, unsigned int nmul,unsigned int nload, unsigned int btb_size, map<string,int> instruct_time, vector<string> instruct_queue,
  nana::listbox &table, nana::grid &mem_gui, nana::listbox &regs, nana::listbox &instr_gui, nana::label &ccount, nana::listbox &rob_gui)
 {

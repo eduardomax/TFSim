@@ -27,6 +27,7 @@ public:
     sc_port<write_if> out_iq;
     sc_port<write_if_f> out_resv_adu;
     sc_port<read_if_f> in_resv_adu;
+    unsigned int total_instructions_exec;
     SC_HAS_PROCESS(reorder_buffer);
     reorder_buffer(sc_module_name name,unsigned int sz,unsigned int pred_size, branch_target_buffer_vector* btb, nana::listbox &gui, nana::listbox::cat_proxy instr_gui);
     ~reorder_buffer();
