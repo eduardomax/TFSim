@@ -207,7 +207,7 @@ void reorder_buffer::new_rob_head()
             else
                 pred = branch(instr_type,(float)rob_buff[0]->vj);
             
-            if (pred) {//Insert in BTB
+            if (!btb->exist_predicted_pc(rob_buff[0]->instr_pos) && pred) {//Insert in BTB
                 unsigned int predicted_pc = rob_buff[0]->instr_pos + std::stoul(rob_buff[0]->destination);
                 btb->insert_pc(rob_buff[0]->instr_pos, predicted_pc);
             }
@@ -216,8 +216,12 @@ void reorder_buffer::new_rob_head()
             {
                 if(pred)
                     out_iq->write(rob_buff[0]->destination + ' ' + std::to_string(rob_buff[0]->entry));
-                else
+                else {
                     out_iq->write("R " + std::to_string(rob_buff[0]->entry));
+                    if (btb->exist_predicted_pc(rob_buff[0]->instr_pos)) {
+                        btb->delete_entry(rob_buff[0]->instr_pos);
+                    }
+                }
                 cout << "-----------------LIMPANDO ROB no ciclo " << sc_time_stamp() << " -----------------" << endl << flush;
                 _flush(); //Esvazia o ROB
                 out_resv_adu->write("F");

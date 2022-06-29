@@ -61,18 +61,30 @@ void top::metrics_report() {
     cout << " ############################ " << endl << flush;
     cout << " ######### Métricas ######### " << endl << flush;
     cout << " ############################ " << endl << flush;
+    double tempo_ciclo_nanosegundos = 1;// Cada ciclo é 1ns
     double ciclos = static_cast<double>((sc_time_stamp().to_double()/1000) - 1);
+    double t_cpu = ciclos * tempo_ciclo_nanosegundos;
     if (fila_r != NULL && rob != NULL) {
-        cout << " ######### Total de Instruções: " << rob->total_instructions_exec << endl << flush;
-        cout << " ######### Ciclos: " << ciclos << endl << flush;
-        cout << " ######### IPC: " << static_cast<double>(rob->total_instructions_exec)/ciclos << endl << flush;
-        cout << " ######### MIPS: " << endl << flush;
+        double total_instructions_exec = static_cast<double>(rob->total_instructions_exec);
+        double ipc = total_instructions_exec/ciclos;
+        double mips = (total_instructions_exec/(ciclos/1e9))/1e6;
+
+        cout << " # Total de Instruções: " << total_instructions_exec << endl << flush;
+        cout << " # Ciclos: " << ciclos << endl << flush;
+        cout << " # IPC: " << ipc << endl << flush;
+        cout << " # MIPS: " << mips << endl << flush;
+        cout << " # t_CPU: " << t_cpu << " ns" << endl << flush;
         return;
     }
-    cout << " ######### Total de Instruções: " << rs_ctrl->total_instructions_exec() << endl << flush;
-    cout << " ######### Ciclos: " << ciclos << endl << flush;
-    cout << " ######### IPC: " << static_cast<double>(rs_ctrl->total_instructions_exec())/ciclos << endl << flush;
-    cout << " ######### MIPS: " << endl << flush;
+    double total_instructions_exec = rs_ctrl->total_instructions_exec();
+    double ipc = total_instructions_exec/ciclos;
+    double mips = (total_instructions_exec/(ciclos/1e9))/1e6;
+    
+    cout << " # Total de Instruções: " << total_instructions_exec << endl << flush;
+    cout << " # Ciclos: " << ciclos << endl << flush;
+    cout << " # IPC: " << ipc << endl << flush;
+    cout << " # MIPS: " << mips << endl << flush;
+    cout << " # t_CPU: " << t_cpu << " ns" << endl << flush;
 }
 
 void top::rob_mode(unsigned int nadd, unsigned int nmul,unsigned int nload, unsigned int btb_size, map<string,int> instruct_time, vector<string> instruct_queue,

@@ -72,9 +72,10 @@ void branch_target_buffer_vector::delete_entry(unsigned int pc)
 {
     int index = find_index_by_PC(pc);
     if (index != -1) {
-        //FOUND
         btb_vector[index]->busy = false;
         btb_vector[index]->pc = 0;
         btb_vector[index]->predicted_pc = 0;
+
+        cout << "Removendo do BTB - Pc: " << pc << endl << flush;
     }
 }
