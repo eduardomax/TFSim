@@ -19,6 +19,7 @@ public:
     
     issue_control_rob(sc_module_name name);
     void issue_select();
+    string clean_PC(string p);
 
 private:
     string p,rob_pos;

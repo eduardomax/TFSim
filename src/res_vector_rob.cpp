@@ -61,11 +61,18 @@ void res_vector_rob::leitura_issue()
         }
         in_issue->notify();
         cout << "Issue da instrução " << ord[0] << " no ciclo " << sc_time_stamp() << " para " << rs[pos]->type_name << endl << flush;
-        rob_pos = std::stoi(ord[5]);
+        rob_pos = std::stoi(ord[6]);//was 5 before
         rs[pos]->op = ord[0];
         rs[pos]->fp = ord[0].at(0) == 'F';
         rs[pos]->dest = rob_pos;
         rs[pos]->instr_pos = std::stoi(ord[4]);
+
+        // static PC of instruction
+        string pc_string = ord[5];
+        pc_string.replace(pc_string.find("PC:"), 3, "");
+        rs[pos]->pc = std::stoi(pc_string);// static PC of instruction
+        // static PC of instruction
+        
         regst = ask_status(ord[2]);
         cat.at(pos).text(OP,ord[0]);
         check_value = false;

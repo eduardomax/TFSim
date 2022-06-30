@@ -22,6 +22,7 @@ void issue_control_rob::issue_select()
     while(true)
     {
         in->nb_read(p);
+        string p_without_pc = clean_PC(p);
         out_rob->write(p);
         in_rob->read(rob_pos);
         ord = instruction_split(p);
@@ -31,12 +32,12 @@ void issue_control_rob::issue_select()
                 out_rsv->write(p + ' ' + rob_pos);
                 break;
             case 2:
-                out_slbuff->write(p + ' ' + rob_pos);
+                out_slbuff->write(p_without_pc + ' ' + rob_pos);
                 in_slbuff->read(slb_p);
-                out_adu->write(p + ' ' + rob_pos + ' ' +  slb_p);
+                out_adu->write(p_without_pc + ' ' + rob_pos + ' ' +  slb_p);
                 break;
             case 3:
-                out_adu->write(p + ' ' + rob_pos);
+                out_adu->write(p_without_pc + ' ' + rob_pos);
                 break;
             case 4:
                 cout << "------------------- CASE 4 ===== " << p <<  ' ' << rob_pos << endl << flush;
@@ -50,5 +51,20 @@ void issue_control_rob::issue_select()
         in->notify();
         wait();
     }
+}
+
+string issue_control_rob::clean_PC(string p)
+{
+    string p_without_pc = p;
+    std::size_t found = p_without_pc.find("PC:");
+    std::size_t length = 0;
+    for (std::size_t i = found; i < p_without_pc.size(); i++) {
+        if (p_without_pc[i] == ' ') {
+            break;
+        }
+        length += 1;
+    }
+    p_without_pc.replace(found, length, "");
+    return p_without_pc;
 }
 

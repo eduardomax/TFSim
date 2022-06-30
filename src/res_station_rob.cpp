@@ -60,8 +60,8 @@ void res_station_rob::exec()
             }
             if(!isMemory)
             {
-                // btb->print_btb();
-                if (btb->exist_predicted_pc(instr_pos) && (op == "BNE" || op == "BEQ")) {// Checking in BTB if op is BNE or BEQ
+                btb->print_btb();
+                if (btb->exist_predicted_pc(pc) && (op == "BNE" || op == "BEQ")) {// Checking in BTB if op is BNE or BEQ
                     cout << "Existe a instrução no BTB, no ciclo " << sc_time_stamp() << endl << flush;
                 } 
                 else {

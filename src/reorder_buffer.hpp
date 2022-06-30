@@ -52,6 +52,7 @@ private:
         int vj,vk;
         unsigned int qj,qk;
         unsigned int instr_pos;
+        unsigned int pc;
         rob_slot(unsigned int id)
         {
             busy = ready = false;

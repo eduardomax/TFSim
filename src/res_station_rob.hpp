@@ -23,6 +23,7 @@ public:
     int qj,qk;
     unsigned int a;
     unsigned int instr_pos;
+    unsigned int pc;
     map<string,int> instruct_time;
     sc_port<write_if> out;
     sc_port<read_if> in;

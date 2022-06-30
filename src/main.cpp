@@ -225,7 +225,7 @@ int sc_main(int argc, char *argv[])
         if (spec)
         {
             inputbox ibox(fm, "", "Tamanho do Preditor de Desvios");
-            inputbox::integer btb("BTB", btb_size, 1, 100, 1);
+            inputbox::integer btb("BTB", btb_size, 0, 100, 1);
             if (ibox.show_modal(btb))
             {
                 btb_size = btb.value();

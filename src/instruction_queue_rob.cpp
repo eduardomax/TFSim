@@ -40,7 +40,7 @@ void instruction_queue_rob::main()
             wait(SC_ZERO_TIME);
             wait(SC_ZERO_TIME);
             wait(SC_ZERO_TIME);
-            out->write(instruct_queue[pc].instruction + " " + std::to_string(pc));
+            out->write(instruct_queue[pc].instruction + " " + std::to_string(pc) + " PC:" + std::to_string(instruct_queue[pc].pc));
             pc++;
             wait(SC_ZERO_TIME);
             cat.at(pc-1).text(ISS,"X");

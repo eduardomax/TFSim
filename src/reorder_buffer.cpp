@@ -76,7 +76,14 @@ void reorder_buffer::leitura_issue()
         cat.at(pos).text(INSTRUCTION,inst);
         ptrs[pos]->state = ISSUE;
         cat.at(pos).text(STATE,"Issue");
-        ptrs[pos]->instr_pos = std::stoi(ord[ord.size()-1]);
+        ptrs[pos]->instr_pos = std::stoi(ord[ord.size()-2]);//was -1 before
+
+        // static PC of instruction
+        string pc_string = ord[ord.size()-1];
+        pc_string.replace(pc_string.find("PC:"), 3, "");
+        ptrs[pos]->pc = std::stoi(pc_string);// static PC of instruction
+        // static PC of instruction
+
         if(ord[0].at(0) == 'S')
         {
             check_value = false;
@@ -152,7 +159,6 @@ void reorder_buffer::leitura_issue()
             {
                 cat.at(pos).text(DESTINATION,ord[2]);
                 ptrs[pos]->destination = ord[2];
-                cout << "----------------- BRANCH < 2 ELSE " << ord[2] << " -----------------" << endl << flush;
             }
             ptrs[pos]->prediction = preditor.predict();
             cout << "------------- PREDICT " << preditor.predict() << endl << flush;
@@ -207,9 +213,9 @@ void reorder_buffer::new_rob_head()
             else
                 pred = branch(instr_type,(float)rob_buff[0]->vj);
             
-            if (!btb->exist_predicted_pc(rob_buff[0]->instr_pos) && pred) {//Insert in BTB
+            if (!btb->exist_predicted_pc(rob_buff[0]->pc) && pred) {//Insert in BTB
                 unsigned int predicted_pc = rob_buff[0]->instr_pos + std::stoul(rob_buff[0]->destination);
-                btb->insert_pc(rob_buff[0]->instr_pos, predicted_pc);
+                btb->insert_pc(rob_buff[0]->pc, predicted_pc);
             }
 
             if(pred != rob_buff[0]->prediction)
