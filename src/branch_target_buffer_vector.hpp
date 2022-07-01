@@ -3,7 +3,7 @@
 class branch_target_buffer_vector
 {
 public:
-    branch_target_buffer_vector(unsigned int size);
+    branch_target_buffer_vector(unsigned int size_bits);
     ~branch_target_buffer_vector();
     int find_index_by_PC(unsigned int pc);
     bool exist_predicted_pc(unsigned int pc);
@@ -24,6 +24,7 @@ public:
             }
         };    
 private:
+    unsigned int size_bits;
     unsigned int size;
     btb **btb_vector;
 
