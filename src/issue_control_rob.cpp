@@ -40,7 +40,6 @@ void issue_control_rob::issue_select()
                 out_adu->write(p_without_pc + ' ' + rob_pos);
                 break;
             case 4:
-                cout << "------------------- CASE 4 ===== " << p <<  ' ' << rob_pos << endl << flush;
                 out_rsv->write(p + ' ' + rob_pos);
                 break;
             default:

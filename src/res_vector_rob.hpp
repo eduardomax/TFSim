@@ -28,6 +28,9 @@ private:
     map<string,int> res_type;
     unsigned int tam_pos[3];
     nana::listbox &table;
+    const nana::listbox::cat_proxy instr_queue_gui;
+    branch_target_buffer_vector* btb;
+
 
     int busy_check(string inst);
     float ask_value(string reg);

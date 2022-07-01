@@ -60,14 +60,14 @@ void res_station_rob::exec()
             }
             if(!isMemory)
             {
-                btb->print_btb();
-                if (btb->exist_predicted_pc(pc) && (op == "BNE" || op == "BEQ")) {// Checking in BTB if op is BNE or BEQ
-                    cout << "Existe a instrução no BTB, no ciclo " << sc_time_stamp() << endl << flush;
-                } 
-                else {
-                    wait(sc_time(instruct_time[op],SC_NS),isFlushed_event);
-                }
+                // btb->print_btb();
+                // if (btb->exist_predicted_pc(pc) && (op == "BNE" || op == "BEQ")) {// Checking in BTB if op is BNE or BEQ
+                //     cout << "Existe a instrução no BTB, no ciclo " << sc_time_stamp() << endl << flush;
+                // } 
+                // else {
                 cout << "Instrucao " << op << " com " << instruct_time[op] << " ciclos para exec " << endl << flush;
+                wait(sc_time(instruct_time[op],SC_NS),isFlushed_event);
+                // }
                 // wait(sc_time(instruct_time[op],SC_NS),isFlushed_event);
                 wait(SC_ZERO_TIME);
                 if(!isFlushed)

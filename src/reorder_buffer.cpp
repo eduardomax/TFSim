@@ -133,7 +133,6 @@ void reorder_buffer::leitura_issue()
                 ptrs[pos]->qj = regst;
             if(branch_instr[ord[0]] < 2) //instrucao com 2 operandos (BEQ,BNE)
             {
-                cout << "-----------------INSTRUCAO COM 2 OPERANDOS " << sc_time_stamp() << " -----------------" << endl << flush;
                 regst = ask_status(true,ord[2]);
                 check_value = false;
                 if(regst != 0)
@@ -161,18 +160,16 @@ void reorder_buffer::leitura_issue()
                 ptrs[pos]->destination = ord[2];
             }
             ptrs[pos]->prediction = preditor.predict();
-            cout << "------------- PREDICT " << preditor.predict() << endl << flush;
             if(preditor.predict())
                 out_iq->write("S " + std::to_string(ptrs[pos]->entry) +  ' ' + ptrs[pos]->destination);
             else
                 out_iq->write("S " + std::to_string(ptrs[pos]->entry));
-            if(ptrs[pos]->qj == 0 && ptrs[pos]->qk == 0) {
-                // ptrs[pos]->ready = true; // ALTERADO: Modificado para BNE/BEQ forçar ser executado pela estacao de reserva
+            if(ptrs[pos]->qj == 0 && ptrs[pos]->qk == 0 && btb->exist_predicted_pc(ptrs[pos]->pc)) {
+                ptrs[pos]->ready = true; // ALTERADO: Modificado para BNE/BEQ forçar ser executado pela estacao de reserva
             }
         }
         else
         {
-            cout << "-----------------ELSE DESTINATION " << ord[1] << " -----------------" << endl << flush;
             ptrs[pos]->destination = ord[1];
             cat.at(pos).text(DESTINATION,ord[1]);
             if(ord[0].at(0) != 'L')
@@ -204,7 +201,6 @@ void reorder_buffer::new_rob_head()
             mem_write(std::stoi(rob_buff[0]->destination),rob_buff[0]->value,rob_buff[0]->entry);
         else if(rob_buff[0]->instruction.at(0) == 'B')
         {
-            cout << "----------------- HEAD ROB BRANCH no ciclo " << sc_time_stamp() << rob_buff[0]->instruction << " -----------------" << endl << flush;
             // instr_queue_gui.at(rob_buff[0]->instr_pos).text(EXEC,"X");
             instr_queue_gui.at(rob_buff[0]->instr_pos).text(WRITE,"X");
             instr_type = branch_instr[rob_buff[0]->instruction];
@@ -412,8 +408,8 @@ void reorder_buffer::check_dependencies(unsigned int index, float value)
                 ptrs[i]->vk = value;
                 ptrs[i]->qk = 0;
             }
-            if(ptrs[i]->qj == 0 && ptrs[i]->qk == 0) {
-                // ptrs[i]->ready = true; // ALTERADO: Modificado para BNE/BEQ forçar ser executado pela estacao de reserva
+            if(ptrs[i]->qj == 0 && ptrs[i]->qk == 0 && btb->exist_predicted_pc(ptrs[i]->pc)) {
+                ptrs[i]->ready = true; // ALTERADO: Modificado para BNE/BEQ forçar ser executado pela estacao de reserva
             }
             if(rob_buff[0]->entry == index && ptrs[i]->ready)
                 rob_head_value_event.notify(1,SC_NS);

@@ -3,7 +3,9 @@
 
 res_vector_rob::res_vector_rob(sc_module_name name,unsigned int t1, unsigned int t2,branch_target_buffer_vector *btb,map<string,int> instruct_time, nana::listbox &lsbox, nana::listbox::cat_proxy ct, nana::listbox::cat_proxy r_ct):
 sc_module(name),
-table(lsbox)
+table(lsbox),
+instr_queue_gui(ct),
+btb(btb)
 {
     res_type = {{"DADD",0},{"DADDI",0},{"DADDU",0},{"DADDIU",0},{"DSUB",0},{"DSUBU",0},{"DMUL",1},{"DMULU",1},{"DDIV",1},{"DDIVU",1}};
     auto cat = table.at(0);
@@ -61,56 +63,38 @@ void res_vector_rob::leitura_issue()
         }
         in_issue->notify();
         cout << "Issue da instrução " << ord[0] << " no ciclo " << sc_time_stamp() << " para " << rs[pos]->type_name << endl << flush;
-        rob_pos = std::stoi(ord[6]);//was 5 before
-        rs[pos]->op = ord[0];
-        rs[pos]->fp = ord[0].at(0) == 'F';
-        rs[pos]->dest = rob_pos;
-        rs[pos]->instr_pos = std::stoi(ord[4]);
 
-        // static PC of instruction
         string pc_string = ord[5];
         pc_string.replace(pc_string.find("PC:"), 3, "");
-        rs[pos]->pc = std::stoi(pc_string);// static PC of instruction
-        // static PC of instruction
-        
-        regst = ask_status(ord[2]);
-        cat.at(pos).text(OP,ord[0]);
-        check_value = false;
-        if(regst != 0)
-        {
-            string check = ask_rob_value(std::to_string(regst));
-            if(check != "EMPTY")
-            {
-                value = std::stof(check);
-                check_value = true;
-            }
+
+        if (btb->exist_predicted_pc(std::stoi(pc_string)) && (ord[0] == "BNE" || ord[0] == "BEQ")) {// Checking in BTB if op is BNE or BEQ
+            cout << "Existe a instrução no BTB, no ciclo " << sc_time_stamp() << endl << flush;
+            unsigned int instr_pos = std::stoi(ord[4]);
+
+            instr_queue_gui.at(instr_pos).text(EXEC,"X");
+            instr_queue_gui.at(instr_pos).text(WRITE,"X");
+
+            wait(SC_ZERO_TIME);
+            out_rob->write("N");
+            wait();
         }
-        if(regst == 0 || check_value == true)
-        {
-            if(check_value == false)
-                value = ask_value(ord[2]);
-            rs[pos]->vj = value;
-            if(ord[2].at(0) == 'R')
-                cat.at(pos).text(VJ,std::to_string((int)value));
-            else
-                cat.at(pos).text(VJ,std::to_string(value));
-        }
-        else
-        {
-            cout << "instruçao " << ord[0] << " aguardando reg " << ord[2] << endl << flush;
-            rs[pos]->qj = regst;
-            cat.at(pos).text(QJ,std::to_string(regst));
-        }
-        if(ord[0].at(ord[0].size()-1) == 'I')
-        {
-            value = std::stof(ord[3]);
-            rs[pos]->vk = value;
-            cat.at(pos).text(VK,std::to_string((int)value));
-        }
-        else 
-        {
+        else {
+
+            rob_pos = std::stoi(ord[6]);//was 5 before
+            rs[pos]->op = ord[0];
+            rs[pos]->fp = ord[0].at(0) == 'F';
+            rs[pos]->dest = rob_pos;
+            rs[pos]->instr_pos = std::stoi(ord[4]);
+
+            // static PC of instruction
+            string pc_string = ord[5];
+            pc_string.replace(pc_string.find("PC:"), 3, "");
+            rs[pos]->pc = std::stoi(pc_string);// static PC of instruction
+            // static PC of instruction
+
+            regst = ask_status(ord[2]);
+            cat.at(pos).text(OP,ord[0]);
             check_value = false;
-            regst = ask_status(ord[3]);
             if(regst != 0)
             {
                 string check = ask_rob_value(std::to_string(regst));
@@ -120,30 +104,66 @@ void res_vector_rob::leitura_issue()
                     check_value = true;
                 }
             }
-                    
             if(regst == 0 || check_value == true)
             {
                 if(check_value == false)
-                    value = ask_value(ord[3]);
-                rs[pos]->vk = value;
-                if(ord[3].at(0) == 'R')
-                    cat.at(pos).text(VK,std::to_string((int)value));
+                    value = ask_value(ord[2]);
+                rs[pos]->vj = value;
+                if(ord[2].at(0) == 'R')
+                    cat.at(pos).text(VJ,std::to_string((int)value));
                 else
-                    cat.at(pos).text(VK,std::to_string(value));
+                    cat.at(pos).text(VJ,std::to_string(value));
             }
             else
             {
-                cout << "instruçao " << ord[0] << " aguardando reg " << ord[3] << endl << flush;
-                rs[pos]->qk = regst;
-                cat.at(pos).text(QK,std::to_string(regst));
+                cout << "instruçao " << ord[0] << " aguardando reg " << ord[2] << endl << flush;
+                rs[pos]->qj = regst;
+                cat.at(pos).text(QJ,std::to_string(regst));
             }
+            if(ord[0].at(ord[0].size()-1) == 'I')
+            {
+                value = std::stof(ord[3]);
+                rs[pos]->vk = value;
+                cat.at(pos).text(VK,std::to_string((int)value));
+            }
+            else 
+            {
+                check_value = false;
+                regst = ask_status(ord[3]);
+                if(regst != 0)
+                {
+                    string check = ask_rob_value(std::to_string(regst));
+                    if(check != "EMPTY")
+                    {
+                        value = std::stof(check);
+                        check_value = true;
+                    }
+                }
+                        
+                if(regst == 0 || check_value == true)
+                {
+                    if(check_value == false)
+                        value = ask_value(ord[3]);
+                    rs[pos]->vk = value;
+                    if(ord[3].at(0) == 'R')
+                        cat.at(pos).text(VK,std::to_string((int)value));
+                    else
+                        cat.at(pos).text(VK,std::to_string(value));
+                }
+                else
+                {
+                    cout << "instruçao " << ord[0] << " aguardando reg " << ord[3] << endl << flush;
+                    rs[pos]->qk = regst;
+                    cat.at(pos).text(QK,std::to_string(regst));
+                }
+            }
+            wait(SC_ZERO_TIME);
+            out_rob->write("N");
+            rs[pos]->Busy = true;
+            cat.at(pos).text(BUSY,"True");
+            rs[pos]->exec_event.notify(1,SC_NS);
+            wait();
         }
-        wait(SC_ZERO_TIME);
-        out_rob->write("N");
-        rs[pos]->Busy = true;
-        cat.at(pos).text(BUSY,"True");
-        rs[pos]->exec_event.notify(1,SC_NS);
-        wait();
     }
 }
 
