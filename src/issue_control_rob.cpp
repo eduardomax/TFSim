@@ -54,16 +54,7 @@ void issue_control_rob::issue_select()
 
 string issue_control_rob::clean_PC(string p)
 {
-    string p_without_pc = p;
-    std::size_t found = p_without_pc.find("PC:");
-    std::size_t length = 0;
-    for (std::size_t i = found; i < p_without_pc.size(); i++) {
-        if (p_without_pc[i] == ' ') {
-            break;
-        }
-        length += 1;
-    }
-    p_without_pc.replace(found, length, "");
-    return p_without_pc;
+    std::size_t found = p.find("PC:");
+    return p.substr(0, found-1);
 }
 
