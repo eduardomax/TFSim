@@ -8,19 +8,26 @@ using namespace std;
 
 branch_target_buffer_vector::branch_target_buffer_vector(unsigned int size_bits): size_bits(size_bits)
 {
-    size = std::pow(2, size_bits);
-    btb_vector = new btb*[size];
-    for (unsigned int i = 0; i < size; i++) {
-        btb_vector[i] = new btb();
+    if (size_bits > 0) {
+        size = std::pow(2, size_bits);
+        btb_vector = new btb*[size];
+        for (unsigned int i = 0; i < size; i++) {
+            btb_vector[i] = new btb();
+        }
+    }
+    else {
+        size = 0;
     }
 }
 
 branch_target_buffer_vector::~branch_target_buffer_vector()
 {
-    for (unsigned int i = 0; i < size; i++)
-        delete btb_vector[i];
-    
-    delete btb_vector;
+    if (size > 0) {
+        for (unsigned int i = 0; i < size; i++)
+            delete btb_vector[i];
+        
+        delete btb_vector;
+    }
 }
 
 void branch_target_buffer_vector::print_btb()
@@ -29,7 +36,7 @@ void branch_target_buffer_vector::print_btb()
     for (unsigned int index = 0; index < size; index++)
     {
         std::bitset<8> x(index);
-        cout << " ######### [" << x << "] busy: " << btb_vector[index]->busy <<" pc: " << btb_vector[index]->pc <<" predicted_pc: " << btb_vector[index]->predicted_pc << endl << flush;
+        cout << " ######### index: [" << x << "] busy: " << btb_vector[index]->busy <<" pc: " << btb_vector[index]->pc <<" predicted_pc: " << btb_vector[index]->predicted_pc << endl << flush;
     }
     cout << " ######### BTB Summary End " << endl << flush;
 }
@@ -37,9 +44,11 @@ void branch_target_buffer_vector::print_btb()
 
 int branch_target_buffer_vector::find_index_by_PC(unsigned int pc)
 {
-    unsigned int index = pc & ((1 << size_bits) - 1);
-    if (btb_vector[index]->busy && btb_vector[index]->pc == pc) {
-        return index;
+    if (size > 0) {
+        unsigned int index = pc & ((1 << size_bits) - 1);
+        if (btb_vector[index]->busy && btb_vector[index]->pc == pc) {
+            return index;
+        }
     }
     return -1; //Not found
 }
@@ -53,8 +62,11 @@ bool branch_target_buffer_vector::exist_predicted_pc(unsigned int pc)
 void branch_target_buffer_vector::insert_pc(unsigned int pc, unsigned int predicted_pc)
 {
     int index = find_index_by_PC(pc);
-    if (index == -1) {
+    if (index == -1 && size > 0) {
         unsigned int index = pc & ((1<<size_bits)-1);
+        cout << "INDEX: " << index << endl << flush;
+        cout << "INDEX: " << index << endl << flush;
+        cout << "INDEX: " << index << endl << flush;
 
         btb_vector[index]->busy = true;
         btb_vector[index]->pc = pc;
@@ -67,7 +79,7 @@ void branch_target_buffer_vector::insert_pc(unsigned int pc, unsigned int predic
 void branch_target_buffer_vector::delete_entry(unsigned int pc)
 {
     int index = find_index_by_PC(pc);
-    if (index != -1) {
+    if (index != -1 && size > 0) {
         btb_vector[index]->busy = false;
         btb_vector[index]->pc = 0;
         btb_vector[index]->predicted_pc = 0;

@@ -201,6 +201,7 @@ void reorder_buffer::new_rob_head()
             mem_write(std::stoi(rob_buff[0]->destination),rob_buff[0]->value,rob_buff[0]->entry);
         else if(rob_buff[0]->instruction.at(0) == 'B')
         {
+            // btb->print_btb();
             // instr_queue_gui.at(rob_buff[0]->instr_pos).text(EXEC,"X");
             instr_queue_gui.at(rob_buff[0]->instr_pos).text(WRITE,"X");
             instr_type = branch_instr[rob_buff[0]->instruction];
