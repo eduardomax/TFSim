@@ -220,11 +220,11 @@ int sc_main(int argc, char *argv[])
             }
         }
     });
-    sub->append("Tamanho do Preditor de Desvios", [&](menu::item_proxy ip)
+    sub->append("Tamanho do BTB", [&](menu::item_proxy ip)
     {
         if (spec)
         {
-            inputbox ibox(fm, "", "Tamanho do Preditor de Desvios");
+            inputbox ibox(fm, "", "Tamanho do BTB");
             inputbox::integer btb("BTB", btb_size, 0, 100, 1);
             if (ibox.show_modal(btb))
             {
