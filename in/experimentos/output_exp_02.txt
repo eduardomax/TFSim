@@ -1,0 +1,17 @@
+
+COM BTB: 
+# Total de Instruções: 559
+ # Ciclos: 982
+ # IPC: 0.569246
+ # MIPS: 569.246
+ # t_CPU: 982 ns
+
+ SEM BTB:
+  # Total de Instruções: 559
+ # Ciclos: 1019
+ # IPC: 0.548577
+ # MIPS: 548.577
+ # t_CPU: 1019 ns
+
+
+
